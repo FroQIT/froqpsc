@@ -205,6 +205,16 @@ body.light-theme .group-card:hover {
   color: var(--clr-indigo);
 }
 
+#group-3d .group-title svg {
+  color: var(--clr-purple);
+}
+
+.groups-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 @media (min-width: 860px) {
   .container {
     max-width: 1040px;
