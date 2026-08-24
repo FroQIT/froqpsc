@@ -503,6 +503,11 @@ body.light-theme .moon-icon {
   box-shadow: var(--card-shadow), var(--glow-indigo);
 }
 
+#link-3d-briefing:hover {
+  border-color: rgba(139, 92, 246, 0.45);
+  box-shadow: var(--card-shadow), var(--glow-purple);
+}
+
 #link-gen-agreements:hover {
   border-color: rgba(99, 102, 241, 0.45);
   box-shadow: var(--card-shadow), var(--glow-indigo);
