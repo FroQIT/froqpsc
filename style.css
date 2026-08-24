@@ -833,6 +833,33 @@ body.light-theme .toast {
   letter-spacing: 0.01em;
 }
 
+.open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--clr-purple), var(--clr-pink));
+  color: #fff !important;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+  transition: all 0.2s ease-in-out;
+}
+
+.open-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+}
+
+.open-btn:active {
+  transform: translateY(0);
+}
+
 /* ==========================================
    Responsive Adaptation (Mobile vs Desktop)
    ========================================== */
