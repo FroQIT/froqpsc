@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Packshot Creation Production Briefing</title>
+  <!-- PDF Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f6f8; }
+    h1 { text-align: center; margin-bottom: 20px; }
+    form { max-width: 1000px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .section { margin-bottom: 20px; background: #f9fafb; padding: 20px; border-radius: 8px; }
+    .section h2 { margin: 0 0 15px; font-size: 1.2em; color: #111827; }
+    label { margin-top: 10px; display: block; font-weight: bold; }
+    input, select, textarea, button { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+    .readonly { background: #f9f9f9; }
+    .ean-entry { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .ean-entry > * { flex: 1 1 200px; }
+    button { background: #007bff; color: #fff; border: none; cursor: pointer; }
+    button:hover { background: #0069d9; }
+  </style>
+</head>
+<body>
+  <h1>Packshot Creation Production Briefing</h1>
+  <form id="briefForm">
+
+    <!-- Project Information -->
+    <div class="section">
+      <h2>Project Information</h2>
+      <label for="briefingVersion">Briefing Version</label>
+      <select id="briefingVersion" required>
+        <option value="" disabled selected>Select Version</option>
+        <option>B01</option><option>B02</option><option>B03</option><option>B04</option><option>B05</option>
+        <option>B06</option><option>B07</option><option>B08</option><option>B09</option><option>B10</option>
+        <option>NLFB_01</option><option>NLFB_02</option><option>NLFB_03</option><option>NLFB_04</option><option>NLFB_05</option>
+        <option>CFB_01</option><option>CFB_02</option><option>CFB_03</option><option>CFB_04</option><option>CFB_05</option>
+      </select>
+
+      <label for="projectNumber">Project Number</label>
+      <input type="text" id="projectNumber" required />
+
+      <label for="clientName">Client Name</label>
+      <select id="clientName" required onchange="onClientChange()">
+        <option value="" disabled selected>Select Client</option>
+        <option>AH</option><option>AH TOGO</option><option>ETOS</option><option>Action</option>
+        <option>AS Watson</option><option>Body & Fit</option><option>Caffè Gondoliere</option><option>Campina</option>
+        <option>Candy Store</option><option>Carlett Elix</option><option>Ceres Pharma</option><option>De Heus</option>
+        <option>Dreumex</option><option>DRG</option><option>Fairtrade Original</option><option>Free Tosti</option>
+        <option>FroQ</option><option>Good Orange</option><option>Guts & Glorious</option><option>Heineken</option>
+        <option>Hema</option><option>Inducoat</option><option>Jack Links</option><option>John West</option>
+        <option>Kalverliefde Zuivel</option><option>Kames</option><option>Keune</option><option>Lazy Vegan</option>
+        <option>Leo de Kock</option><option>Makro</option><option>Maxeda</option><option>Maxxium</option>
+        <option>McCain</option><option>Miron Glass</option><option>NowNewNext</option><option>Perfetti</option>
+        <option>Pervasco</option><option>Plus</option><option>Princes</option><option>Proud</option>
+        <option>Remia</option><option>Sligro</option><option>Stegeman</option><option>Studio Kempen</option>
+        <option>SuperUnie</option><option>Trust</option><option>Versuni</option><option>Vrumona</option>
+        <option>Welkoop</option><option>Yarrah</option>
+      </select>
+
+      <div id="symsysDiv" style="display:none;">
+        <label for="symsysNumber">Symsys Number</label>
+        <input type="text" id="symsysNumber" />
+      </div>
+
+      <label for="projectOwner">Project Owner (PO)</label>
+      <select id="projectOwner" required>
+        <option value="" disabled selected>Select PO</option>
+        <option>Shalin</option><option>Sreeram</option><option>Teja</option><option>Nikethan</option><option>Balachandar</option>
+      </select>
+
+      <label for="textureReference">Do you require a texture reference?</label>
+      <select id="textureReference">
+        <option value="" disabled selected>— choose —</option>
+        <option>No</option>
+        <option>Yes</option>
+      </select>
+
+      <label for="lightingReference">Do you require a lighting reference?</label>
+      <select id="lightingReference" onchange="onLightingChange()">
+        <option value="" disabled selected>— choose —</option>
+        <option>No</option>
+        <option>Yes</option>
+      </select>
+      <div id="lightingOptionsDiv" style="display:none; margin-top:10px;">
+        <label for="lightingOption">Select Lighting Reference Option</label>
+        <select id="lightingOption">
+          <option value="" disabled selected>— choose —</option>
+          <option>Use from 3507_Lighting_Reference folder</option>
+          <option>Use 01_FroQ_TopView_LS</option>
+          <option>Use 02_FroQ_FrontView_LS</option>
+          <option>Use from Existing/Reference PS</option>
+        </select>
+      </div>
+
+      <label for="artworkFrom">Use Artwork from?</label>
+      <select id="artworkFrom">
+        <option value="" disabled selected>— choose —</option>
+        <option>3501_Artwork</option><option>8103_Artwork_CS</option>
+      </select>
+
+      <label for="projectType">Scope of Work</label>
+      <select id="projectType" required onchange="onScopeChange()">
+        <option value="" disabled selected>— choose —</option>
+        <option>New Packshot Creation</option>
+        <option>Existing Packshot with Artwork Update</option>
+        <option>Existing Packshot with Content Update</option>
+        <option>Existing Packshot with Artwork and Content Update</option>
+        <option>Reference Packshot with Artwork Update</option>
+        <option>Reference Packshot with Content Update</option>
+        <option>Reference Packshot with Artwork and Content Update</option>
+        <option>Correction/update on a delivered PS</option>
+        <option>Adjust NL/client FB</option>
+        <option>Create additional angle for already delivered PS</option>
+        <option>Create Hero for already delivered PS</option>
+        <option>Create Composition for already delivered PS</option>
+        <option>Create Hero, Compositiona and additional angle for already delivered PS</option>
+      </select>
+      <div id="projectNote" style="display:none; font-style:italic; margin-top:5px; color:#555;"></div>
+
+      <div id="modelRequiredDiv" style="display:none; margin-top:10px;">
+        <label for="modelRequired">3D Model Required?</label>
+        <select id="modelRequired"><option value="" disabled selected>— choose —</option><option>No</option><option>Yes</option></select>
+      </div>
+    </div>
+
+    <!-- Packshot Requirements -->
+    <div class="section">
+      <h2>Packshot Requirements</h2>
+      <label for="standardPackshots">Standard Packshots</label>
+      <input type="number" id="standardPackshots" min="0" oninput="updateTotal()" required placeholder="Enter count" />
+      <label for="includeHero">Include Hero Packshots?</label>
+      <select id="includeHero" onchange="onHeroChange()"><option value="" disabled selected>— choose —</option><option>No</option><option>Yes</option></select>
+      <div id="heroPackshotsDiv" style="display:none; margin-top:10px;"><label for="heroPackshots">Hero Packshots</label><input type="number" id="heroPackshots" min="0" placeholder="Enter count" oninput="updateTotal()" /></div>
+      <label for="includeComposition">Include Composition Packshots?</label>
+      <select id="includeComposition" onchange="onCompChange()"><option value="" disabled selected>— choose —</option><option>No</option><option>Yes</option></select>
+      <div id="compositionPackshotsDiv" style="display:none; margin-top:10px;"><label for="compositionPackshots">Composition Packshots</label><input type="number" id="compositionPackshots" min="0" placeholder="Enter count" oninput="updateTotal()" /></div>
+      <label for="includeAdditional">Include Additional Angle Packshots?</label>
+      <select id="includeAdditional" onchange="onAddChange()"><option value="" disabled selected>— choose —</option><option>No</option><option>Yes</option></select>
+      <div id="additionalPackshotsDiv" style="display:none; margin-top:10px;"><label for="additionalPackshots">Additional Angle Packshots</label><input type="number" id="additionalPackshots" min="0" placeholder="Enter count" oninput="updateTotal()" /></div>
+      <div id="cameraAngleDiv" style="display:none; margin-top:10px;"><label for="cameraAngle">Camera Angle(s)</label><select id="cameraAngle" multiple>
+          <option>2D1 - Straight & Front (SF)</option>
+          <option>2D2 - Front & Top (FT)</option>
+          <option>2D3 - Left & Front (LF)</option>
+          <option>2D4 - Right & Front (RF)</option>
+          <option>2D5 - Left, Top & Front (LT)</option>
+          <option>2D6 - Right, Top & Front (RT)</option>
+          <option>2D7 - Straight & Back (SB)</option>
+          <option>2D8 - Straight & Left (SL)</option>
+          <option>2D9 - Straight & Right (SR)</option>
+          <option>2D0 - Straight & Top (ST)</option>
+        </select></div>
+      <label for="totalPackshots">Total Packshots</label>
+      <input type="number" id="totalPackshots" readonly class="readonly" />
+    </div>
+
+    <!-- EAN and Packaging Details -->
+    <div class="section">
+      <h2>EAN and Packaging Details</h2>
+      <div id="eanFields"></div>
+      <button type="button" onclick="generateFields()">Generate Packshot Fields</button>
+    </div>
+
+    <!-- Upload Images -->
+    <div class="section">
+      <h2>Upload Images</h2>
+      <label for="imageCount">How many images? (1-4)</label>
+      <input type="number" id="imageCount" min="1" max="4" onchange="createImageFields()" />
+      <div id="imageFields" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="section">
+      <h2>Additional Information</h2>
+      <textarea id="additionalNotes" rows="5" placeholder="Notes / Special Instructions"></textarea>
+    </div>
+
+    <!-- Delivery Formats -->
+    <div class="section" id="deliveryFormatsDiv" style="display:none;">
+      <h2>Delivery formats</h2>
+      <textarea id="deliveryFormats" rows="3" placeholder="Specify delivery formats..."></textarea>
+    </div>
+
+    <!-- Submit -->
+     <div class="section">
+  <button type="button" id="exportDraftBtn" class="btn-draft">
+    Export Draft
+  </button>
+
+  <input type="file" id="importDraftInput" accept="application/json" style="display:none;" />
+  <button type="button" id="importDraftBtn" class="btn-draft">
+    Import Draft
+  </button>
+
+  <button type="button" id="submitPdfBtn">
+    Submit and Download PDF
+  </button>
+</div>
+    
+  </form>
+
+  <script>
+    const packages = [
+      "Aerosol - 3DASL","Bucket - 3DBKT","Block Bag - 3DBLB","Blister Cup - 3DBLC","Blister Pack - 3DBLP",
+      "Bottle - 3DBOT","Brick Bag - 3DBRB","Aluminium Can - 3DCAN","Cluster - 3DCLS","Compositions - 3DCMP",
+      "Crate - 3DCRA","Carrier - 3DCRR","Carrier Bag - 3DCRB","Carton - 3DCRT","Cilinder Carton - 3DCRC",
+      "Cup - 3DCUP","Flow_Pack - 3DFLP","Grinder - 3DGDR","Gusseted Bag - 3DGSB","Jar - 3DJAR",
+      "Nozzle Pouch - 3DNZP","Pouch - 3DPCH","Pet_Jar - 3DPJR","Pillow Bag - 3DPLB","Pump Bottle - 3DPMB",
+      "Pet Bottle - 3DPTB","Pet Tube - 3DPTT","Quattro Seal_Bag - 3DQSB","Roll On - 3DRLN","Spray_Bottle - 3DSBT",
+      "Sack - 3DSCK","Sachet - 3DSCT","Shaker - 3DSKR","Sleeve - 3DSLV","Stand Up_Pouch - 3DSUP",
+      "Shrink Wrap - 3DSWR","Tube - 3DTBE","Tin - 3DTIN","Tray - 3DTRY","Tetra Pak - 3DTTR",
+      "Tub - 3DTUB","Wrapper - 3DWRP","Wand Vial_Bottle - 3DWVB","Zipper Pouch - 3DZPP","Shelf Ready Pack - 3DSRP",
+      "Pet Can - 3DPCN","Corrugated Box - 3DCBX","Pet Box - 3DPBX","Miscellaneous/Others - 3DMSC","Foil Wrapper - 3DFLR","Tie Bag - 3DTBG"
+    ];
+    
+    const $ = id => document.getElementById(id);
+
+    function show(id, cond) { $(id).style.display = cond ? 'block' : 'none'; }
+    function onClientChange() {
+      const other = ['AH','AH TOGO','ETOS'].indexOf($('clientName').value) < 0;
+      show('symsysDiv', other);
+      show('deliveryFormatsDiv', other);
+    }
+    function onScopeChange() {
+      const t = $('projectType').value || '';
+      show('projectNote', /Existing|Reference/.test(t));
+      if (/Existing/.test(t)) {
+        $('projectNote').textContent = '3504_Existing_Packshot folder';
+      } else if (/Reference/.test(t)) {
+        $('projectNote').textContent = '3505_Reference_Packshot folder';
+      } else {
+        $('projectNote').textContent = '';
+      }
+      show('modelRequiredDiv', t === 'New Packshot Creation');
+    }
+    function onLightingChange() { show('lightingOptionsDiv', $('lightingReference').value === 'Yes'); }
+    function updateTotal() {
+      const ids = ['standardPackshots','heroPackshots','compositionPackshots','additionalPackshots'];
+      $('totalPackshots').value = ids.reduce((s,id) => s + (+$(id)?.value||0), 0);
+    }
+    function onHeroChange() { show('heroPackshotsDiv', $('includeHero').value==='Yes'); updateTotal(); }
+    function onCompChange() { show('compositionPackshotsDiv', $('includeComposition').value==='Yes'); updateTotal(); }
+    function onAddChange() {
+      show('additionalPackshotsDiv', $('includeAdditional').value==='Yes');
+      show('cameraAngleDiv', $('includeAdditional').value==='Yes');
+      updateTotal();
+    }
+    function generateFields() {
+      const area = $('eanFields'); area.innerHTML = '';
+      const cnt = +$('standardPackshots').value || 0;
+      const isRef = ($('projectType').value || '').startsWith('Reference');
+      for (let i = 1; i <= cnt; i++) {
+        const div = document.createElement('div'); div.className = 'ean-entry';
+        div.innerHTML = `
+          <input placeholder="EAN ${i}" id="ean${i}" required>
+          ${isRef ? `<input placeholder="Reference EAN ${i}" id="refean${i}" required>` : ''}
+          <select id="pkg${i}" required>${packages.map(p => `<option>${p}</option>`).join('')}</select>
+          <input placeholder="Shape Code ${i}" id="shape${i}" required>
+        `;
+        area.appendChild(div);
+      }
+    }
+    function createImageFields() {
+      const area = $('imageFields'); area.innerHTML = '';
+      const cnt = +$('imageCount').value; if (!cnt || cnt < 1 || cnt > 4) return alert('Enter 1–4 images');
+      for (let i = 1; i <= cnt; i++) {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <label>Image ${i}:</label>
+          <input type="file" id="img${i}" accept="image/*">
+          <label>Description ${i}:</label>
+          <input type="text" id="imgDesc${i}">
+        `;
+        area.appendChild(div);
+      }
+    }
+
+    // helper: read a File to dataURL (Promise)
+    function fileToDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+  async function generatePDF() {
+    // Validate required fields
+    const requiredFields = [
+      { id: 'briefingVersion', name: 'Briefing Version' },
+      { id: 'clientName', name: 'Client Name' },
+      { id: 'projectNumber', name: 'Project Number' },
+      { id: 'projectOwner', name: 'Project Owner' },
+      { id: 'projectType', name: 'Scope of Work' },
+      { id: 'standardPackshots', name: 'Standard Packshots', type: 'number' }
+    ];
+    for (const field of requiredFields) {
+      const el = document.getElementById(field.id);
+      const val = el && el.value;
+      if (!val || (field.type === 'number' && Number(val) <= 0)) {
+        alert(`Please provide ${field.name}.`);
+        el && el.focus();
+        return;
+      }
+    }
+    // Validate general select fields
+    const selects = [
+      { id: 'textureReference', name: 'Texture Reference' },
+      { id: 'lightingReference', name: 'Lighting Reference' },
+      { id: 'artworkFrom', name: 'Artwork Source' },
+      { id: 'projectType', name: 'Scope of Work' },
+      { id: 'includeHero', name: 'Include Hero Packshots' },
+      { id: 'includeComposition', name: 'Include Composition Packshots' },
+      { id: 'includeAdditional', name: 'Include Additional Angle Packshots' }
+    ];
+    for (const s of selects) {
+      const sel = document.getElementById(s.id);
+      if (!sel.value) {
+        alert(`Please select ${s.name}.`);
+        sel.focus();
+        return;
+      }
+    }
+    // Conditional counts if Yes
+    if (document.getElementById('includeHero').value === 'Yes') {
+      const heroEl = document.getElementById('heroPackshots');
+      if (!heroEl.value || Number(heroEl.value) <= 0) {
+        alert('Please provide Hero Packshots count.');
+        heroEl.focus();
+        return;
+      }
+    }
+    if (document.getElementById('includeComposition').value === 'Yes') {
+      const compEl = document.getElementById('compositionPackshots');
+      if (!compEl.value || Number(compEl.value) <= 0) {
+        alert('Please provide Composition Packshots count.');
+        compEl.focus();
+        return;
+      }
+    }
+    if (document.getElementById('includeAdditional').value === 'Yes') {
+      const addEl = document.getElementById('additionalPackshots');
+      if (!addEl.value || Number(addEl.value) <= 0) {
+        alert('Please provide Additional Angle Packshots count.');
+        addEl.focus();
+        return;
+      }
+    }
+    // Validate lighting option if reference asked
+    if (document.getElementById('lightingReference').value === 'Yes') {
+      const lightOpt = document.getElementById('lightingOption');
+      if (!lightOpt.value) {
+        alert('Please select a Lighting Reference option.');
+        lightOpt.focus();
+        return;
+      }
+    }
+    // Validate model required field if visible
+    if (document.getElementById('modelRequiredDiv').style.display === 'block') {
+      const modelOpt = document.getElementById('modelRequired');
+      if (!modelOpt.value) {
+        alert('Please select a 3D Model option.');
+        modelOpt.focus();
+        return;
+      }
+    }
+    // Validate camera angles if additional angles requested
+    if (document.getElementById('cameraAngleDiv').style.display === 'block') {
+      const camSel = document.getElementById('cameraAngle');
+      if (!camSel.selectedOptions.length) {
+        alert('Please select at least one Camera Angle.');
+        camSel.focus();
+        return;
+      }
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let y = 20;
+    const ph = doc.internal.pageSize.getHeight();
+    function check(h) { if (y + h > ph - 20) { doc.addPage(); y = 20; } }
+
+    // Header
+    doc.setFontSize(16);
+    doc.text('Packshot Creation Production Briefing', 20, y);
+    doc.setFontSize(10);
+    doc.text(new Date().toLocaleString(), 190, y, { align: 'right' });
+    y += 10;
+    doc.line(20, y, 190, y);
+    y += 10;
+
+    // Project Information
+    const xLabel = 20, xValue = 80;
+    doc.setFontSize(12).setFont(undefined, 'bold');
+    doc.text('Project Information', xLabel, y);
+    y += 8;
+    doc.setFont(undefined, 'normal');
+    const projInfo = [
+      ['Briefing Version', document.getElementById('briefingVersion').value],
+      ['Client Name', document.getElementById('clientName').value],
+      ['Project Number', document.getElementById('projectNumber').value]
+    ];
+    if (document.getElementById('symsysDiv').style.display === 'block') {
+      projInfo.push(['Symsys Number', document.getElementById('symsysNumber').value]);
+    }
+    projInfo.push(['PO Name', document.getElementById('projectOwner').value]);
+    projInfo.forEach(([label, val]) => { check(10); doc.text(`${label}:`, xLabel, y); doc.text(String(val || ''), xValue, y); y += 8; });
+    y += 10;
+
+    // Scope and Reference
+    doc.setFont(undefined, 'bold').text('Scope and Reference', xLabel, y);
+    y += 8;
+    doc.setFont(undefined, 'normal');
+    const scopeList = [];
+    scopeList.push(['Scope of Work', document.getElementById('projectType').value]);
+    scopeList.push(['Artwork Reference', document.getElementById('artworkFrom').value === '3501_Artwork' ? '3501_Artwork folder' : '8103_Artwork_CS folder']);
+    if (document.getElementById('lightingReference').value === 'Yes') {
+      scopeList.push(['Lighting Reference', document.getElementById('lightingOption').value]);
+    }
+    if (document.getElementById('projectNote').style.display === 'block') {
+      scopeList.push(['Existing PS Reference', document.getElementById('projectNote').textContent]);
+    }
+    if (document.getElementById('textureReference').value === 'Yes') {
+      scopeList.push(['Texture Reference', 'Use from 3506_Texturing_Reference folder']);
+    }
+    if (document.getElementById('modelRequiredDiv').style.display === 'block' && document.getElementById('modelRequired').value === 'Yes') {
+      scopeList.push(['3D Model Reference', 'Model_01 folder']);
+    }
+    scopeList.forEach(([label, val]) => { check(10); doc.text(`${label}:`, xLabel, y); doc.text(String(val || ''), xValue, y); y += 8; });
+    y += 10;
+
+    // Packshot Counts
+    doc.setFont(undefined, 'bold').text('Packshot Counts', xLabel, y);
+    y += 8; doc.setFont(undefined, 'normal');
+    const counts = [[ 'Standard Packshots', document.getElementById('standardPackshots').value ]];
+    if (document.getElementById('includeHero').value === 'Yes') { counts.push(['Hero Packshots', document.getElementById('heroPackshots').value]); }
+    if (document.getElementById('includeComposition').value === 'Yes') { counts.push(['Composition Packshots', document.getElementById('compositionPackshots').value]); }
+    if (document.getElementById('includeAdditional').value === 'Yes') { counts.push(['Additional Angle Packshots', document.getElementById('additionalPackshots').value]); }
+    counts.push(['Total Packshots', document.getElementById('totalPackshots').value]);
+    counts.forEach(([label, val]) => { check(10); doc.text(`${label}:`, xLabel, y); doc.text(String(val || ''), xValue, y); y += 8; });
+    y += 10;
+
+    // Camera Angles
+    if (document.getElementById('cameraAngleDiv').style.display === 'block') {
+      doc.setFont(undefined, 'bold').text('Camera Angles', xLabel, y);
+      y += 8; doc.setFont(undefined, 'normal');
+      Array.from(document.getElementById('cameraAngle').selectedOptions).forEach(opt => { check(8); doc.text(`- ${opt.text}`, xLabel + 5, y); y += 6; });
+      y += 10;
+    }
+
+    // EAN and Packaging Details
+    const isRef = (document.getElementById('projectType').value || '').startsWith('Reference');
+    const headers = ['EAN'].concat(isRef ? ['Reference EAN'] : []).concat(['Package', 'Shape Code']);
+    const rows = [];
+    for (let i = 1; i <= Number(document.getElementById('standardPackshots').value); i++) {
+      const row = [ (document.getElementById(`ean${i}`) || {value:''}).value ];
+      if (isRef) row.push((document.getElementById(`refean${i}`) || {value:''}).value);
+      row.push((document.getElementById(`pkg${i}`) || {value:''}).value, (document.getElementById(`shape${i}`) || {value:''}).value);
+      rows.push(row);
+    }
+    const sectionSpace = 10 + 12 + rows.length * 10 + 10;
+    check(sectionSpace);
+    doc.setFont(undefined, 'bold').text('EAN and Packaging Details', xLabel, y);
+    y += 10;
+    doc.autoTable({ head: [headers], body: rows, startY: y });
+    y = doc.lastAutoTable.finalY + 10;
+
+    // ——— Images Grid (2×2 respecting the footer) ———
+    const imgs = [];
+    const imgCount = Number(document.getElementById('imageCount').value || 0);
+    // Collect files and descriptions
+    for (let i = 1; i <= imgCount; i++) {
+      const fi = document.getElementById(`img${i}`);
+      const di = document.getElementById(`imgDesc${i}`);
+      if (fi && fi.files.length && di && di.value) {
+        imgs.push({ file: fi.files[0], desc: di.value });
+      }
+    }
+
+    if (imgs.length) {
+      // Read all files as data URLs
+      const dataUrls = await Promise.all(imgs.map(it => fileToDataURL(it.file).then(data => ({ data, desc: it.desc }))));
+
+      const cols         = 2;
+      const imgW         = 80;
+      const imgH         = 80;
+      const descH        = 6;    // space for the description text
+      const rowPadding   = 10;   // extra vertical gap after each row
+      const gapX         = 20;   // horizontal gap between columns
+      const marginX      = 20;   // page left margin
+      const footerHeight = 10;   // height of your footer text
+      const footerGap    = 10;   // extra breathing room above the footer
+      const pageH        = doc.internal.pageSize.getHeight();
+      const topMargin    = 20;   // where content typically starts
+      const rowH         = descH + imgH + rowPadding;
+
+      // X positions of column 0 and column 1
+      const xPos = [
+        marginX,
+        marginX + imgW + gapX
+      ];
+
+      let idx = 0;
+      while (idx < dataUrls.length) {
+        // If drawing this row would overlap the footer, move to a new page
+        if (y + rowH > pageH - footerHeight - footerGap) {
+          doc.addPage();
+          y = topMargin;
+        }
+
+        // Draw up to two images in this row
+        for (let col = 0; col < cols && idx < dataUrls.length; col++, idx++) {
+          const { data, desc } = dataUrls[idx];
+          const x               = xPos[col];
+          doc.text(desc, x, y);
+          // Guess image format from data URL header
+          const isPNG = data.indexOf('data:image/png') === 0;
+          const fmt = isPNG ? 'PNG' : 'JPEG';
+          try {
+            doc.addImage(data, fmt, x, y + descH, imgW, imgH);
+          } catch (e) {
+            // If addImage fails (e.g. huge image), show alt text only
+            doc.text('[Image could not be embedded]', x, y + descH + 6);
+          }
+        }
+
+        // Advance down by one row
+        y += rowH;
+      }
+
+      // add a bit of padding before the next section
+      y += 10;
+    }
+
+    // Additional Notes
+    const notes = document.getElementById('additionalNotes').value.trim();
+    if (notes) {
+      const lines = doc.splitTextToSize(notes, 170);
+      check(lines.length * 6 + 18);
+      doc.setFont(undefined, 'bold').text('Additional Notes', xLabel, y);
+      y += 8; doc.setFont(undefined, 'normal');
+      lines.forEach(line => { doc.text(line, xLabel, y); y += 6; });
+      y += 10;
+    }
+
+    // Delivery Formats
+    if (document.getElementById('deliveryFormatsDiv').style.display === 'block') {
+      const df = document.getElementById('deliveryFormats').value.trim();
+      if (df) {
+        const lines = doc.splitTextToSize(df, 170);
+        check(lines.length * 6 + 18);
+        doc.setFont(undefined, 'bold').text('Delivery Formats', xLabel, y);
+        y += 8; doc.setFont(undefined, 'normal');
+        lines.forEach(line => { doc.text(line, xLabel, y); y += 6; });
+        y += 10;
+      }
+    }
+
+    // Footer and Save
+    const pages = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= pages; p++) {
+      doc.setPage(p).setFontSize(10).text(
+        `Packshot briefing | Page ${p} of ${pages}`,
+        doc.internal.pageSize.getWidth() / 2,
+        ph - 10,
+        { align: 'center' }
+      );
+    }
+
+    // Construct filename parameters
+    const rawProj = document.getElementById('projectNumber').value || 'Unknown';
+    const projTrim = rawProj.length > 16 ? rawProj.substring(0, 16) : rawProj;
+    const version = document.getElementById('briefingVersion').value || 'Unknown';
+
+    // Gather form data to send to the server
+    let jsonData = null;
+    try {
+      jsonData = collectFormData();
+    } catch (e) {
+      console.error('JSON collect failed:', e);
+    }
+
+    // ——— Auto-save to Local Client Directory ———
+    try {
+      const pdfBase64 = doc.output('datauristring');
+      const payload = {
+        projectNumber: rawProj,
+        briefingVersion: version,
+        clientName: document.getElementById('clientName').value,
+        pdfBase64: pdfBase64,
+        jsonData: jsonData
+      };
+
+      const sendRequest = (url) => {
+        return fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })));
+      };
+
+      // Try primary IP, fallback to localhost
+      sendRequest('http://10.10.151.50:8008/save-briefing')
+      .catch(err => {
+        console.warn("Could not reach 10.10.151.50, trying localhost...", err);
+        return sendRequest('http://localhost:8008/save-briefing');
+      })
+      .then(res => {
+        if (res.status === 200) {
+          alert("Saved");
+        } else {
+          alert(`Warning: Local auto-save failed!\nReason: ${res.body.error}`);
+        }
+      })
+      .catch(err => {
+        alert("Error: Local auto-save server is not running or could not be reached.");
+        console.error(err);
+      });
+    } catch (e) {
+      console.error('Local auto-save execution failed:', e);
+    }
+  }
+
+  // Create New Briefing Button
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('briefForm');
+    const newBtn = document.createElement('button');
+    newBtn.type = 'button';
+    newBtn.id = 'newBriefingBtn';
+    newBtn.textContent = 'Create new briefing';
+    newBtn.style.marginTop = '20px';
+    newBtn.style.background = '#28a745';
+    newBtn.style.color = '#fff';
+    newBtn.style.border = 'none';
+    newBtn.style.padding = '10px';
+    newBtn.style.borderRadius = '4px';
+    newBtn.style.cursor = 'pointer';
+    form.appendChild(newBtn);
+
+    newBtn.addEventListener('click', () => {
+      // Reset form and all dynamic sections
+      form.reset();
+      // Hide dynamic sections
+      ['symsysDiv','deliveryFormatsDiv','lightingOptionsDiv','projectNote','modelRequiredDiv','heroPackshotsDiv','compositionPackshotsDiv','additionalPackshotsDiv','cameraAngleDiv'].forEach(id => document.getElementById(id).style.display = 'none');
+      // Clear generated fields
+      document.getElementById('eanFields').innerHTML = '';
+      document.getElementById('imageFields').innerHTML = '';
+      document.getElementById('totalPackshots').value = '';
+    });
+
+    // submit pdf button: call async function and catch errors
+    document.getElementById('submitPdfBtn').addEventListener('click', () => {
+      generatePDF().catch(err => { console.error(err); alert('An error occurred while generating the PDF. See console for details.'); });
+    });
+  });
+
+  // ——— 1) Gather every field’s value (skip files) ———
+    function collectFormData() {
+      const data = {};
+      document.querySelectorAll('#briefForm input, #briefForm select, #briefForm textarea')
+        .forEach(el => {
+          if (!el.id || el.type === 'file') return;
+          if (el.type === 'checkbox' || el.type === 'radio') {
+            data[el.id] = el.checked;
+          } else if (el.multiple) {
+            data[el.id] = Array.from(el.selectedOptions).map(o => o.value);
+          } else {
+            data[el.id] = el.value;
+          }
+        });
+      return data;
+    }
+
+    // ——— 2) Reset & repopulate form from an object ———
+    function applyFormData(data) {
+      // 2a) Reset everything (uses your “Create new briefing” button)
+      document.getElementById('newBriefingBtn').click();
+
+      // 2b) Populate simple fields
+      for (const id in data) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = data[id];
+        } else if (el.multiple) {
+          Array.from(el.options).forEach(opt => {
+            opt.selected = data[id].includes(opt.value);
+          });
+        } else {
+          el.value = data[id];
+        }
+      }
+
+      // 2c) Rebuild & refill EAN rows
+      if (data.standardPackshots) {
+        document.getElementById('standardPackshots').value = data.standardPackshots;
+        generateFields();
+        for (let i = 1; i <= +data.standardPackshots; i++) {
+          ['ean','refean','pkg','shape'].forEach(pref => {
+            const fld = document.getElementById(pref + i);
+            if (fld && data[pref + i] != null) fld.value = data[pref + i];
+          });
+        }
+      }
+
+      // 2d) Rebuild & refill image-description fields
+      if (data.imageCount) {
+        document.getElementById('imageCount').value = data.imageCount;
+        createImageFields();
+        for (let i = 1; i <= +data.imageCount; i++) {
+          const desc = document.getElementById('imgDesc' + i);
+          if (desc && data['imgDesc' + i]) desc.value = data['imgDesc' + i];
+        }
+      }
+
+      // 2e) Re-run all show/hide and total logic
+      onClientChange();
+      onScopeChange();
+      onLightingChange();
+      onHeroChange();
+      onCompChange();
+      onAddChange();
+      updateTotal();
+    }
+
+    // ——— 3) Export Draft → download JSON file ———
+    document.getElementById('exportDraftBtn').addEventListener('click', () => {
+      const data = collectFormData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `PackshotBrief_Draft_${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // ——— 4a) Import Draft button → open file picker ———
+    document.getElementById('importDraftBtn').addEventListener('click', () => {
+      document.getElementById('importDraftInput').click();
+    });
+
+    // ——— 4b) When a file is chosen → read & apply ———
+    document.getElementById('importDraftInput').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => {
+        try {
+          const data = JSON.parse(evt.target.result);
+          applyFormData(data);
+          alert('Draft imported successfully!');
+        } catch {
+          alert('Invalid JSON file.');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = ''; // allow re-importing the same file
+    });
+  </script>
+</body>
+</html>
